@@ -10,40 +10,42 @@
 > **Link**: https://github.com/fivethirtyeight/data/blob/master/police-killings/police_killings.csv
 
 **Attributes**:
-name: Name of deceased
-age:Age of deceased
-gender:Gender of deceased
-raceethnicity: Race/ethnicity of deceased
-month: Month of killing
-day:Day of incident
-year:Year of incident
-streetaddress:Address/intersection where incident occurred
-city:City where incident occurred
-state:State where incident occurred
-latitude:Latitude, geocoded from address
-longitude:Longitude, geocoded from address
-state_fp:State FIPS code
-county_fp:County FIPS code
-tract_ce:Tract ID code
-geo_id:Combined tract ID code
-county_id:Combined county ID code
-namelsad:Tract description
-lawenforcementagency:Agency involved in incident
-cause:Cause of death
-armed:How/whether deceased was armed
-pop:Tract population
-share_white:Share of pop that is non-Hispanic white
-share_bloack:Share of pop that is black
-share_hispanic:Share of pop that is Hispanic/Latino
-p_income:Tract-level median personal income
-h_income:Tract-level median household income
-county_income:County-level median household income
-comp_income:h_income/county_income
-county_bucket:Household income, quintile within county
-nat_bucket:Household income, quintile nationally
-pov:Tract-level poverty rate
-urate:Tract-level unemployment rate
-college:Share of 25+ pop with BA or higher
+
+ - name: Name of deceased 
+ - age:Age of deceased 
+ - gender:Gender of deceased
+ - raceethnicity: Race/ethnicity of deceased 
+- month: Month of killing
+- day:Day of incident 
+- year:Year of incident
+- streetaddress:Address/intersection where incident occurred 
+- city:City
+- where incident occurred 
+- state:State where incident occurred
+- latitude:Latitude, geocoded from address 
+- longitude:Longitude, geocoded from address 
+- state_fp:State FIPS code 
+- county_fp:County FIPS
+- code tract_ce:Tract ID code 
+- geo_id:Combined tract ID code
+- county_id:Combined county ID code 
+- namelsad:Tract description
+- lawenforcementagency:Agency involved in incident 
+- cause:Cause of death
+- armed:How/whether deceased was armed 
+- pop:Tract population
+- share_white:Share of pop that is non-Hispanic white
+- share_bloack:Share of pop that is black 
+- share_hispanic:Share of pop that is Hispanic/Latino 
+- p_income:Tract-level median personal income
+- h_income:Tract-level median household income
+- county_income:County-level median household income
+- comp_income:h_income/county_income 
+- county_bucket:Household income quintile within county 
+- nat_bucket:Household income, quintile
+- nationally pov:Tract-level poverty rate 
+- urate:Tract-level unemployment rate 
+- college:Share of 25+ pop with BA or higher
 
 ## Description of the problem you’ll solve or the question you’ll investigate
 1. Find out the age bucket where most of the deceased fall.
