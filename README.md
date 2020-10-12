@@ -1,7 +1,8 @@
 # Team Members
-Akhil Reddy Mandadi  - (014608451) - akhilmandadi
-Jagan Gadamsetty (014636531) - jagan695
-Bhavana (014618513) - bhavana686
+
+ - Akhil Reddy Mandadi  - (014608451) - akhilmandadi 
+ - Jagan Gadamsetty (014636531) - jagan695 
+ - Bhavana (014618513) - bhavana686
 
 # Police Killings Analysis
 ### Data Source
