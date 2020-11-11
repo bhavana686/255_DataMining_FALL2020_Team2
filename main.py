@@ -91,6 +91,12 @@ def fill_missing_values(data):
     median_comp_income = data['comp_income'].median()
     data.fillna({'comp_income': median_comp_income}, inplace=True)
 
+    # Filling Missing values of pov with median by using replace function
+    data["pov"] = data["pov"].replace("-", '0')
+    data[["pov"]] = data[["pov"]].apply(pd.to_numeric)
+    median_pov = data['pov'].median()
+    data["pov"] = data["pov"].replace(0, round(median_pov))
+
     return data
 
 
