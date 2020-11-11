@@ -95,6 +95,16 @@ def fill_missing_values(data):
 
 
 def data_analysis(data):
+    # Finding the breakup of what arms the deceased holds at the time of death like gun, knife etc.
+    arms_breakup = data["armed"].value_counts()
+    print(arms_breakup)
+    armed_labels = 'Firearm', 'No', 'Knife', 'Other', 'Vehicle', 'Non-lethal firearm', 'Disputed'
+    plt.pie(arms_breakup, labels=armed_labels, autopct='%1.1f%%')
+    plt.title('Breakdown by armed:')
+    plt.axis('equal')
+    plt.show()
+
+    # Finding correlation between number of incidents taken place in a city and the average personal income of the city.
     incidents_per_city = data["city"].value_counts()
     average_personal_income_of_cities = data[['city', 'p_income']]
     average_personal_income_of_cities = average_personal_income_of_cities.groupby(
@@ -108,6 +118,7 @@ def data_analysis(data):
         'The correlation between number of incidents taken place in a city and the average personal income in the city is : ' + str(
             correlation))
 
+    # Finding correlation between number of incidents taken place in a city and the average household income of the city.
     average_household_income_of_cities = data[['city', 'h_income']]
     average_household_income_of_cities = average_household_income_of_cities.groupby(
         [average_household_income_of_cities["city"]]).mean()
@@ -120,6 +131,7 @@ def data_analysis(data):
         'The correlation between number of incidents taken place in a city and the average household income in the city is : ' + str(
             correlation))
 
+    # Finding correlation between number of incidents taken place in a city and the average unemployment rate of the city.
     average_unemployment_rate_of_cities = data[['city', 'urate']]
     average_unemployment_rate_of_cities = average_unemployment_rate_of_cities.groupby(
         [average_unemployment_rate_of_cities["city"]]).mean()
@@ -132,6 +144,7 @@ def data_analysis(data):
         'The correlation between number of incidents taken place in a city and the average unemployment rate in the city is : ' + str(
             correlation))
 
+    # Finding correlation between number of incidents taken place in a city and the average literacy rate of the city.
     average_literacy_rate_of_cities = data[['city', 'college']]
     average_literacy_rate_of_cities = average_literacy_rate_of_cities.groupby(
         [average_literacy_rate_of_cities["city"]]).mean()
@@ -144,6 +157,7 @@ def data_analysis(data):
         'The correlation between number of incidents taken place in a city and the average literacy rate in the city is : ' + str(
             correlation))
 
+    # Finding correlation between number of incidents taken place in a city and the average poverty rate of the city.
     average_poverty_rate_of_cities = data[['city', 'pov']]
     average_poverty_rate_of_cities = average_poverty_rate_of_cities.groupby(
         [average_poverty_rate_of_cities["city"]]).mean()
