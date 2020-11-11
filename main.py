@@ -94,6 +94,69 @@ def fill_missing_values(data):
     return data
 
 
+def data_analysis(data):
+    incidents_per_city = data["city"].value_counts()
+    average_personal_income_of_cities = data[['city', 'p_income']]
+    average_personal_income_of_cities = average_personal_income_of_cities.groupby(
+        [average_personal_income_of_cities["city"]]).mean()
+    average_personal_income_and_number_of_incidents_per_city = pd.concat(
+        [incidents_per_city, average_personal_income_of_cities], axis=1)
+    print(average_personal_income_and_number_of_incidents_per_city)
+    correlation = average_personal_income_and_number_of_incidents_per_city['city'].corr(
+        average_personal_income_and_number_of_incidents_per_city['p_income'])
+    print(
+        'The correlation between number of incidents taken place in a city and the average personal income in the city is : ' + str(
+            correlation))
+
+    average_household_income_of_cities = data[['city', 'h_income']]
+    average_household_income_of_cities = average_household_income_of_cities.groupby(
+        [average_household_income_of_cities["city"]]).mean()
+    average_household_income_and_number_of_incidents_per_city = pd.concat(
+        [incidents_per_city, average_household_income_of_cities], axis=1)
+    print(average_household_income_and_number_of_incidents_per_city)
+    correlation = average_household_income_and_number_of_incidents_per_city['city'].corr(
+        average_household_income_and_number_of_incidents_per_city['h_income'])
+    print(
+        'The correlation between number of incidents taken place in a city and the average household income in the city is : ' + str(
+            correlation))
+
+    average_unemployment_rate_of_cities = data[['city', 'urate']]
+    average_unemployment_rate_of_cities = average_unemployment_rate_of_cities.groupby(
+        [average_unemployment_rate_of_cities["city"]]).mean()
+    average_unemployment_rate_and_number_of_incidents_per_city = pd.concat(
+        [incidents_per_city, average_unemployment_rate_of_cities], axis=1)
+    print(average_unemployment_rate_and_number_of_incidents_per_city)
+    correlation = average_unemployment_rate_and_number_of_incidents_per_city['city'].corr(
+        average_unemployment_rate_and_number_of_incidents_per_city['urate'])
+    print(
+        'The correlation between number of incidents taken place in a city and the average unemployment rate in the city is : ' + str(
+            correlation))
+
+    average_literacy_rate_of_cities = data[['city', 'college']]
+    average_literacy_rate_of_cities = average_literacy_rate_of_cities.groupby(
+        [average_literacy_rate_of_cities["city"]]).mean()
+    average_literacy_rate_and_number_of_incidents_per_city = pd.concat(
+        [incidents_per_city, average_literacy_rate_of_cities], axis=1)
+    print(average_literacy_rate_and_number_of_incidents_per_city)
+    correlation = average_literacy_rate_and_number_of_incidents_per_city['city'].corr(
+        average_literacy_rate_and_number_of_incidents_per_city['college'])
+    print(
+        'The correlation between number of incidents taken place in a city and the average literacy rate in the city is : ' + str(
+            correlation))
+
+    average_poverty_rate_of_cities = data[['city', 'pov']]
+    average_poverty_rate_of_cities = average_poverty_rate_of_cities.groupby(
+        [average_poverty_rate_of_cities["city"]]).mean()
+    average_poverty_rate_and_number_of_incidents_per_city = pd.concat(
+        [incidents_per_city, average_poverty_rate_of_cities], axis=1)
+    print(average_poverty_rate_and_number_of_incidents_per_city)
+    correlation = average_poverty_rate_and_number_of_incidents_per_city['city'].corr(
+        average_poverty_rate_and_number_of_incidents_per_city['pov'])
+    print(
+        'The correlation between number of incidents taken place in a city and the average poverty rate in the city is : ' + str(
+            correlation))
+
+
 def main():
     pd.set_option('display.width', 800)
     pd.set_option('display.max_columns', None)
@@ -113,6 +176,8 @@ def main():
 
     # Filling the missing values and cleaning the data
     data = fill_missing_values(data)
+
+    data_analysis(data)
 
 
 if __name__ == "__main__":
