@@ -186,6 +186,29 @@ def data_analysis(data):
     plt.title('breakdown by gender')
     plt.axis('equal')
     plt.show()
+
+    month_values = data["month"].value_counts()
+    print(month_values)
+    month_labels = 'March','April','February','January','May','June'
+    plt.bar(x=month_labels,
+    height= month_values) 
+    plt.title('breakdown by month')
+    plt.show() 
+
+    city_values = data["city"].value_counts().head(5)
+    print(city_values.head(5))
+    city_labels = 'Los Angeles','Houston','Phoenix','New York','Oklahoma City'
+    plt.bar(x=city_labels,height= city_values) 
+    plt.xticks(rotation=45)
+    plt.title('breakdown by city')
+    plt.show() 
+
+    state_values = data["state"].value_counts().head(5)
+    print(state_values.head(5))
+    state_labels = 'CA','TX','FL','AZ','OK'
+    plt.bar(x=state_labels,height= state_values) 
+    plt.title('breakdown by state')
+    plt.show() 
     
    
 
