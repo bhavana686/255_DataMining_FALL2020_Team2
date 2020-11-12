@@ -106,7 +106,7 @@ After pre-processing the data it's important to analyze the data to know the rel
 #### The breakup of data based on armed status:
 ![The breakup of data based on armed status](/images/armed.png)
 #### The following table represents the various correlation coefficients :
-![Correlation](/images/correlation.png)
+![Correlation](/images/correlation.PNG)
 
 The number of incidents taken place in a city are influenced by the following factors such as average poverty rate, average household income, average unemployment rate, average personal income, average literacy rate in the order of decreasing influence.
 
