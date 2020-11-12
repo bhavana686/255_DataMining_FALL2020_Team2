@@ -90,7 +90,7 @@ Performed the below tasks as part of the preprocessing process:
 After pre-processing the data it's important to analyze the data to know the relation between attributes. So, we have analyzed the important attributes such as age bucket, gender, city, state, law enforcement agency, killings by month, armed, race and ethnicity and for simple understanding and visualization we represented data with appropriate graphical visualizations such as bar graph and pie charts.
 
 #### The breakup of data based on gender:
-
+![The breakup of data based on gender](/images/gender.png)
 #### Top five cities in which police killings took place:
 ![Top five Cities](/images/city.png)
 #### Top ten age buckets subjected to police killings :
