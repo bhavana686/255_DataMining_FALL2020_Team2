@@ -28,6 +28,7 @@ def fill_missing_values(data):
     # Plotted the number of distinct age values on x-axis and occurrences on y-axis and the graph was
     # skewed distribution. So median is preferred to replace the missing values
     plt.plot(data["age"].value_counts())
+    plt.title('Distribution graph of attribute - age')
     plt.show()
     median_age = data['age'].median()
     data["age"] = data["age"].replace(0, round(median_age))
@@ -50,6 +51,7 @@ def fill_missing_values(data):
     print(data[idx])
     data[["urate"]] = data[["urate"]].apply(pd.to_numeric)
     plt.plot(data["urate"].value_counts())
+    plt.title('Distribution graph of attribute - unemployment rate')
     plt.show()
     # The graph is skewed distribution, replacing null values with median
     median_urate = data['urate'].median()
@@ -62,6 +64,7 @@ def fill_missing_values(data):
     print(data[idx])
     data[["college"]] = data[["college"]].apply(pd.to_numeric)
     plt.plot(data["college"].value_counts())
+    plt.title('Distribution graph of attribute - literacy rate')
     plt.show()
     # The graph is skewed distribution, replacing null values with median
     median_college = data['college'].median()

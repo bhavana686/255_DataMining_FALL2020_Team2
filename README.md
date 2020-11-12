@@ -1,4 +1,5 @@
 
+
 # Team Members
 
  - Akhil Reddy Mandadi  - (014608451) - akhilmandadi 
@@ -75,4 +76,43 @@ And also correlate the columns that we are interested in and mine useful relatio
 
 We will evaluate the accuracy of our decision tree classifier model by dividing our data into training and test sets. We will be able to find some key relationships and patterns on how few attributes like ethicity, income and education can correlate to a killing.
 We should be able to findout the relations between various dimensions of the data and mine useful insights from the raw data.
+
+## Preliminary Analysis Write-up
+
+Performed the below tasks as part of the preprocessing process:
+
+1. Removing Unnecessary Columns: Dropped the name, streetaddress, day, latitude and longitude attributes as they are not necessary for the analysis and hence dropping these columns will not affect our analysis.
+
+2. Filling the missing and invalid data: Identified the columns which has invalid or null data. Counted the unique/distinct occurrences of values for string data type values to identify the invalid values, and for numeric attributes filled the null data with mean/median by plotting the graph with the values and examining the distribution graph and filling invalid data with appropriate values. Dropped the rows when few attributes like race ethnicity, armed and cause has missing or invalid data as it would be difficult to perform classification in the later stages.
+
+ #### Data Analysis and Visualizations:
+
+After pre-processing the data it's important to analyze the data to know the relation between attributes. So, we have analyzed the important attributes such as age bucket, gender, city, state, law enforcement agency, killings by month, armed, race and ethnicity and for simple understanding and visualization we represented data with appropriate graphical visualizations such as bar graph and pie charts.
+
+#### The breakup of data based on gender:
+
+#### Top five cities in which police killings took place:
+![Top five Cities](/images/city.png)
+#### Top ten age buckets subjected to police killings :
+![Top ten Age Buckets](/images/age.png)
+#### Top five law enforcement agencies involved in police killings:
+![Top five law enforcement agencies](/images/lawenforcement.png)
+#### Trend of police killings in the year of 2015 on a monthly basis:
+![Trend of police killings](/images/month.png)
+#### The breakup of data based on race:
+![The breakup of data based on race](/images/race.png)
+#### Top five states in which police killings took places:
+![ Top five states](/images/state.png)
+#### The breakup of data based on armed status:
+![The breakup of data based on armed status](/images/armed.png)
+#### The following table represents the various correlation coefficients :
+![Correlation](/images/correlation.png)
+
+The number of incidents taken place in a city are influenced by the following factors such as average poverty rate, average household income, average unemployment rate, average personal income, average literacy rate in the order of decreasing influence.
+
+#### Potential methods we are considering applying to mine patterns in the data:
+
+We are planning to use decision tree classifier to generate a model which can be used to classify the police killings data to classify whether the killing is unwanted or not.
+
+We are planning to use clustering algorithms such as K – means and Hierarchical clustering algorithms by choosing the best cluster number . At the end of the process we will be having a cluster label for each of the record and the properties of the clusters formed can be analyzed to mine interesting patterns in the data.
 
