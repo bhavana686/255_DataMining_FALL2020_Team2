@@ -175,6 +175,38 @@ def data_analysis(data):
     print(
         'The correlation between number of incidents taken place in a city and the average poverty rate in the city is : ' + str(
             correlation))
+    gender_values = data["gender"].value_counts()
+    print(gender_values)
+    if(gender_values.Male > gender_values.Female):
+      print('Most of the deceased belongs to Male group')
+    else:
+      print('Most of the deceased belongs to Female group')
+    gender_labels = 'Male','Female'
+    plt.pie(gender_values, labels=gender_labels, autopct='%1.1f%%')
+    plt.title('breakdown by gender')
+    plt.axis('equal')
+    plt.show()
+    
+   
+
+    race_values = data["raceethnicity"].value_counts()
+    print(race_values)
+    race_labels = 'White','Black','Hispanic/Latino','Asian/Pacific Islander','Native American'
+    plt.pie(race_values, labels=race_labels, autopct='%1.1f%%')
+    plt.title('breakdown by race')
+    plt.axis('equal')
+    plt.show()
+
+    
+    lawenforcement_values = data["lawenforcementagency"].value_counts().head(5)
+    print(lawenforcement_values.head(5))
+    lawenforcement_labels = 'Los Angeles Police ','Oklahoma City Police','US Marshals Service ','Los Angeles County Sheriffs','Indianapolis Metropolitan'
+    plt.bar(x=lawenforcement_labels,height= lawenforcement_values) 
+    plt.xticks(rotation=45)
+    plt.title('breakdown by law enforcement')
+    plt.show() 
+
+    
 
 
 def main():
