@@ -175,6 +175,22 @@ def data_analysis(data):
     print(
         'The correlation between number of incidents taken place in a city and the average poverty rate in the city is : ' + str(
             correlation))
+
+
+
+    #Analysing the data by breaking down with reference to age group and ploting bar graph
+    ages=data["age"].value_counts(bins=10)
+    print(ages)
+    ages_labels = '(30.2, 37.3]','(23.1, 30.2] ','(37.3, 44.4]','(15.928, 23.1]','(44.4, 51.5]','(51.5, 58.6]','(58.6, 65.7]','(65.7, 72.8] ','(72.8, 79.9]','(79.9, 87.0] '
+    plt.bar(x=ages_labels,
+    height= ages) 
+    plt.hist(ages_labels, rwidth=10)
+    plt.xticks(rotation=30)
+    plt.title('Breakdown by Ages')
+    plt.show() 
+
+    
+    #Analysing the data by breaking down with reference to gender group and ploting pie chart
     gender_values = data["gender"].value_counts()
     print(gender_values)
     if(gender_values.Male > gender_values.Female):
@@ -183,52 +199,62 @@ def data_analysis(data):
       print('Most of the deceased belongs to Female group')
     gender_labels = 'Male','Female'
     plt.pie(gender_values, labels=gender_labels, autopct='%1.1f%%')
-    plt.title('breakdown by gender')
+    plt.title('Breakdown by Gender')
+    plt.axis('equal')
+    plt.show()
+    
+   
+    #Analysing the data by breaking down with reference to race group and ploting pie chart
+    race_values = data["raceethnicity"].value_counts()
+    print(race_values)
+    race_labels = 'White','Black','Hispanic/Latino','Asian/Pacific Islander','Native American'
+    plt.pie(race_values, labels=race_labels, autopct='%1.1f%%')
+    plt.title('Breakdown by Race')
     plt.axis('equal')
     plt.show()
 
+    #Analysing the data by breaking down with reference to month and ploting bar graph
     month_values = data["month"].value_counts()
     print(month_values)
     month_labels = 'March','April','February','January','May','June'
     plt.bar(x=month_labels,
     height= month_values) 
-    plt.title('breakdown by month')
+    plt.title('Breakdown by Month')
     plt.show() 
 
+
+    #Analysing the data by breaking down with reference to city and ploting bar graph
     city_values = data["city"].value_counts().head(5)
     print(city_values.head(5))
     city_labels = 'Los Angeles','Houston','Phoenix','New York','Oklahoma City'
     plt.bar(x=city_labels,height= city_values) 
     plt.xticks(rotation=45)
-    plt.title('breakdown by city')
+    plt.title('Breakdown by City')
     plt.show() 
 
+     
+    #Analysing the data by breaking down with reference to state and ploting bar graph
     state_values = data["state"].value_counts().head(5)
     print(state_values.head(5))
     state_labels = 'CA','TX','FL','AZ','OK'
     plt.bar(x=state_labels,height= state_values) 
-    plt.title('breakdown by state')
+    plt.title('Breakdown by State')
     plt.show() 
-    
-   
 
-    race_values = data["raceethnicity"].value_counts()
-    print(race_values)
-    race_labels = 'White','Black','Hispanic/Latino','Asian/Pacific Islander','Native American'
-    plt.pie(race_values, labels=race_labels, autopct='%1.1f%%')
-    plt.title('breakdown by race')
-    plt.axis('equal')
-    plt.show()
 
-    
+    #Analysing the data by breaking down with reference to law enforcement group and ploting bar graph
     lawenforcement_values = data["lawenforcementagency"].value_counts().head(5)
     print(lawenforcement_values.head(5))
     lawenforcement_labels = 'Los Angeles Police ','Oklahoma City Police','US Marshals Service ','Los Angeles County Sheriffs','Indianapolis Metropolitan'
     plt.bar(x=lawenforcement_labels,height= lawenforcement_values) 
     plt.xticks(rotation=45)
-    plt.title('breakdown by law enforcement')
+    plt.title('Breakdown by Law Enforcement')
     plt.show() 
 
+    
+    
+
+   
     
 
 
