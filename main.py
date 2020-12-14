@@ -257,6 +257,27 @@ def data_analysis(data):
     plt.title('Breakdown by Law Enforcement')
     plt.show()
 
+
+def prep_training(data):
+    # Apply label encoding to encode all the values in the columns,so that it can be passed to the model
+    data = data.apply(LabelEncoder().fit_transform)
+    x = data.iloc[:, :7]
+    y = data.iloc[:, 7]
+    print("Shape of x: ", x.shape)
+    print("Shape of y: ", y.shape)
+
+    # Splitting the dataset into train and test sets (test_size = 0.2)
+    # see model_selection
+
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+    return X_train, X_test, y_train, y_test
+
+
+# Custom function which takes both the training, testing data and depth
+def dt_model(x_train, x_test, y_train, y_test, depth):
+    print("Decision tree with depth ", +depth)
+
+
 def decision_tree_classification(data):
     numeric_data = data.select_dtypes(include=np.number)
     X = numeric_data  # independent columns
@@ -282,6 +303,11 @@ def decision_tree_classification(data):
 
     print(dt_data['cause'].unique())
 
+    x_train, x_test, y_train, y_test = prep_training(dt_data)
+    dt_model(x_train, x_test, y_train, y_test, 2)
+    dt_model(x_train, x_test, y_train, y_test, 3)
+    dt_model(x_train, x_test, y_train, y_test, 4)
+    dt_model(x_train, x_test, y_train, y_test, 5)
 
 def main():
     pd.set_option('display.width', 800)
