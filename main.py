@@ -8,6 +8,25 @@ from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import scale  # Data scaling
+from sklearn import decomposition  # PCA
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import plotly.express as px
+from sklearn.model_selection import train_test_split
+import pandas as pd
+from matplotlib import pyplot
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import preprocessing
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, classification_report, plot_confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+
 
 def load_data(filename):
     """Loading a csv file into a Pandas dataframe.
@@ -22,6 +41,87 @@ def remove_unnecessary_columns(data):
         ['name', 'streetaddress', 'day', 'latitude', 'longitude', 'geo_id', 'county_bucket', 'nat_bucket', 'tract_ce',
          'county_id', 'county_fp', 'state_fp'],
         axis=1, inplace=True)
+
+
+def implementpca(data, olddata):
+    null_columns = data.columns[data.isnull().any()]
+    print(data[null_columns].isnull().sum())
+    print("Are any value null", data.isnull().values.any())
+
+    labelencoder = LabelEncoder()
+
+    X = data
+    Y = olddata["cause"]
+    Y = labelencoder.fit_transform(olddata['cause'])
+    scaler = StandardScaler()
+    scaler.fit(X)
+    X = scaler.transform(X)
+    pca = decomposition.PCA(n_components=2)  # estimate only 2 PCs
+    X_new = pca.fit_transform(X)  # project the original data into the PCA space
+    fig, axes = plt.subplots(1, 2)
+    axes[0].scatter(X[:, 0], X[:, 1], c=Y)
+    axes[0].set_xlabel('x1')
+    axes[0].set_ylabel('x2')
+    axes[0].set_title('Before PCA')
+    axes[1].scatter(X_new[:, 0], X_new[:, 1], c=Y)
+    axes[1].set_xlabel('PC1')
+    axes[1].set_ylabel('PC2')
+    axes[1].set_title('After PCA')
+    plt.show()
+    print('explained_variance_ratio_')
+    print(pca.explained_variance_ratio_)
+    print('components')
+    print(abs(pca.components_))
+
+
+def implementKnn(data):
+    temp_data = data[['age', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
+
+    print(temp_data)
+
+    temp_data = temp_data.apply(LabelEncoder().fit_transform)
+    train = temp_data.iloc[:, :5]
+    test = temp_data.iloc[:, 5]
+
+    null_columns = train.columns[train.isnull().any()]
+    print(train[null_columns].isnull().sum())
+    print("Are any value null", train.isnull().values.any())
+    print("y shape = ", train.shape)
+    print(train)
+
+    X_train, X_test, y_train, y_test = train_test_split(train, test, test_size=0.20, random_state=55, shuffle=True)
+
+    KNeighborsModel = KNeighborsClassifier(n_neighbors=5, weights='uniform', algorithm='brute')
+
+    KNeighborsModel.fit(X_train, y_train)
+
+    print("KNeighbors Classifier model run successfully")
+
+    conmax = confusion_matrix(y_test, KNeighborsModel.predict(X_test))
+
+    TP = conmax[0][0]
+    TN = conmax[1][1]
+    FN = conmax[1][0]
+    FP = conmax[0][1]
+
+    print("KNeighbours Algorithm confusion matrix")
+    print(conmax)
+    print("Testing Accuracy = ", (TP + TN) / (TP + TN + FN + FP))
+    print()
+
+    print(classification_report(y_test, KNeighborsModel.predict(X_test)))
+    print("Accuracy Score is:", accuracy_score(y_test, KNeighborsModel.predict(X_test)))
+
+    knc = KNeighborsClassifier(n_neighbors=7)
+    knc.fit(X_train, y_train)
+    title = "KNeighbours : Confusion Matrix"
+    disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues, normalize=None)
+    disp.ax_.set_title(title)
+
+    print(title)
+    print(disp.confusion_matrix)
+
+    plt.show()
 
 
 def fill_missing_values(data):
@@ -326,6 +426,26 @@ def decision_tree_classification(data):
     dt_model(x_train, x_test, y_train, y_test, 4)
     dt_model(x_train, x_test, y_train, y_test, 5)
 
+
+def k_means_clustering(data):
+    data = data.apply(LabelEncoder().fit_transform)
+    distortions = []
+    K = range(1, 10)
+
+    for k in K:
+        kmeanModel = KMeans(n_clusters=k)
+        kmeanModel.fit(data)
+        distortions.append(kmeanModel.inertia_)
+
+    plt.figure(figsize=(8, 4))
+    plt.plot(K, distortions, 'bx-')
+    plt.xlabel('k')
+    plt.ylabel('Distortion')
+    plt.title('The Elbow Method showing the optimal k')
+    plt.show()
+    # The optimal k value is found out to be 3 based on elbow method.
+
+
 def main():
     pd.set_option('display.width', 800)
     pd.set_option('display.max_columns', None)
@@ -347,6 +467,13 @@ def main():
     data = fill_missing_values(data)
 
     data_analysis(data)
+    numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+
+    newdf = data.select_dtypes(include=numerics)
+    implementpca(newdf, data)
+    implementKnn(data)
+
+    k_means_clustering(data)
 
     decision_tree_classification(data)
 
