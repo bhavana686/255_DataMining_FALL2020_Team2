@@ -276,6 +276,23 @@ def prep_training(data):
 # Custom function which takes both the training, testing data and depth
 def dt_model(x_train, x_test, y_train, y_test, depth):
     print("Decision tree with depth ", +depth)
+    model = DecisionTreeClassifier(random_state=0, max_depth=depth)
+    model.fit(x_train, y_train)
+    # Feature names, i.e., Attributes
+    # ['raceethnicity', 'gender', 'cause']
+    fn = ['h_income', 'county_income', 'p_income', 'pop', 'pov', 'raceethnicity', 'armed']
+    # Class names
+    cn = ['Gunshot', 'Death in custody', 'Taser', 'Struck by vehicle']
+    tree.plot_tree(model, feature_names=fn, class_names=cn, filled=True)
+    # Visualisation using the matplotlib library
+    plt.savefig('decision' + str(depth) + '.png')
+    # plt.show()
+    training_accuracy = model.score(x_train, y_train)
+    print("The training accuracy is found out to be: ", +training_accuracy)
+    # Predict the testing data and storing it in y_pred
+    y_pred = model.predict(x_test)
+    testing_accuracy = accuracy_score(y_test, y_pred)
+    print("The testing accuracy is found out to be: ", +testing_accuracy)
 
 
 def decision_tree_classification(data):
