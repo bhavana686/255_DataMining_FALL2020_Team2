@@ -27,13 +27,11 @@ def load_data(filename):
 
 
 def remove_unnecessary_columns(data):
-<<<<<<< Updated upstream
-    data.drop(['name', 'streetaddress', 'day', 'latitude', 'longitude', 'geo_id'], axis=1, inplace=True)
-=======
     data.drop(
         ['name', 'streetaddress', 'day', 'latitude', 'longitude', 'geo_id', 'county_bucket', 'nat_bucket', 'tract_ce',
          'county_id', 'county_fp', 'state_fp'],
         axis=1, inplace=True)
+
     
 def implementpca(data,olddata):
     null_columns = data.columns[data.isnull().any()]
@@ -123,10 +121,7 @@ def implementKnn(data):
 
 
 
-    
-
->>>>>>> Stashed changes
-
+ 
 
 def fill_missing_values(data):
     # Identifying the rows of age with non numeric values
@@ -142,6 +137,7 @@ def fill_missing_values(data):
     # Plotted the number of distinct age values on x-axis and occurrences on y-axis and the graph was
     # skewed distribution. So median is preferred to replace the missing values
     plt.plot(data["age"].value_counts())
+    plt.title('Distribution graph of attribute - age')
     plt.show()
     median_age = data['age'].median()
     data["age"] = data["age"].replace(0, round(median_age))
@@ -164,6 +160,7 @@ def fill_missing_values(data):
     print(data[idx])
     data[["urate"]] = data[["urate"]].apply(pd.to_numeric)
     plt.plot(data["urate"].value_counts())
+    plt.title('Distribution graph of attribute - unemployment rate')
     plt.show()
     # The graph is skewed distribution, replacing null values with median
     median_urate = data['urate'].median()
@@ -176,6 +173,7 @@ def fill_missing_values(data):
     print(data[idx])
     data[["college"]] = data[["college"]].apply(pd.to_numeric)
     plt.plot(data["college"].value_counts())
+    plt.title('Distribution graph of attribute - literacy rate')
     plt.show()
     # The graph is skewed distribution, replacing null values with median
     median_college = data['college'].median()
