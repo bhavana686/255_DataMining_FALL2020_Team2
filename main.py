@@ -11,8 +11,10 @@ def load_data(filename):
 
 
 def remove_unnecessary_columns(data):
-    data.drop(['name', 'streetaddress', 'day', 'latitude', 'longitude', 'geo_id'], axis=1, inplace=True)
-
+    data.drop(
+        ['name', 'streetaddress', 'day', 'latitude', 'longitude', 'geo_id', 'county_bucket', 'nat_bucket', 'tract_ce',
+         'county_id', 'county_fp', 'state_fp'],
+        axis=1, inplace=True)
 
 def fill_missing_values(data):
     # Identifying the rows of age with non numeric values
