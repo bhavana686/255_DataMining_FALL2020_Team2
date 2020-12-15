@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import scale # Data scaling
-from sklearn import decomposition #PCA
+from sklearn.preprocessing import scale  # Data scaling
+from sklearn import decomposition  # PCA
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
@@ -15,7 +15,7 @@ import pandas as pd
 from matplotlib import pyplot
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import preprocessing
-from sklearn.metrics import accuracy_score, confusion_matrix,roc_curve,classification_report,plot_confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, classification_report, plot_confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
@@ -34,12 +34,12 @@ def remove_unnecessary_columns(data):
          'county_id', 'county_fp', 'state_fp'],
         axis=1, inplace=True)
 
-    
-def implementpca(data,olddata):
+
+def implementpca(data, olddata):
     null_columns = data.columns[data.isnull().any()]
     print(data[null_columns].isnull().sum())
-    print("Are any value null",data.isnull().values.any())
- 
+    print("Are any value null", data.isnull().values.any())
+
     labelencoder = LabelEncoder()
 
     X = data
@@ -48,14 +48,14 @@ def implementpca(data,olddata):
     scaler = StandardScaler()
     scaler.fit(X)
     X = scaler.transform(X)
-    pca = decomposition.PCA(n_components=2) # estimate only 2 PCs
-    X_new = pca.fit_transform(X) # project the original data into the PCA space
-    fig, axes = plt.subplots(1,2)
-    axes[0].scatter(X[:,0], X[:,1], c=Y)
+    pca = decomposition.PCA(n_components=2)  # estimate only 2 PCs
+    X_new = pca.fit_transform(X)  # project the original data into the PCA space
+    fig, axes = plt.subplots(1, 2)
+    axes[0].scatter(X[:, 0], X[:, 1], c=Y)
     axes[0].set_xlabel('x1')
     axes[0].set_ylabel('x2')
     axes[0].set_title('Before PCA')
-    axes[1].scatter(X_new[:,0], X_new[:,1], c=Y)
+    axes[1].scatter(X_new[:, 0], X_new[:, 1], c=Y)
     axes[1].set_xlabel('PC1')
     axes[1].set_ylabel('PC2')
     axes[1].set_title('After PCA')
@@ -63,57 +63,51 @@ def implementpca(data,olddata):
     print('explained_variance_ratio_')
     print(pca.explained_variance_ratio_)
     print('components')
-    print(abs( pca.components_ ))
+    print(abs(pca.components_))
+
 
 def implementKnn(data):
-    temp_data= data[['age', 'p_income', 'h_income', 'pov', 'comp_income','cause']]
+    temp_data = data[['age', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
 
     print(temp_data)
-   
+
     temp_data = temp_data.apply(LabelEncoder().fit_transform)
     train = temp_data.iloc[:, :5]
     test = temp_data.iloc[:, 5]
-  
+
     null_columns = train.columns[train.isnull().any()]
     print(train[null_columns].isnull().sum())
-    print("Are any value null",train.isnull().values.any())
-    print("y shape = ",train.shape)
+    print("Are any value null", train.isnull().values.any())
+    print("y shape = ", train.shape)
     print(train)
 
+    X_train, X_test, y_train, y_test = train_test_split(train, test, test_size=0.20, random_state=55, shuffle=True)
 
-    X_train, X_test , y_train, y_test = train_test_split(train,test,test_size=0.20, random_state=55, shuffle =True)
-  
+    KNeighborsModel = KNeighborsClassifier(n_neighbors=5, weights='uniform', algorithm='brute')
 
-
-    KNeighborsModel = KNeighborsClassifier(n_neighbors = 5,weights = 'uniform',algorithm = 'brute')
-
-    KNeighborsModel.fit(X_train,y_train)
-
+    KNeighborsModel.fit(X_train, y_train)
 
     print("KNeighbors Classifier model run successfully")
 
+    conmax = confusion_matrix(y_test, KNeighborsModel.predict(X_test))
 
-    conmax =confusion_matrix(y_test,KNeighborsModel.predict(X_test))
-
-    TP=conmax[0][0]
-    TN=conmax[1][1]
-    FN=conmax[1][0]
-    FP=conmax[0][1]
+    TP = conmax[0][0]
+    TN = conmax[1][1]
+    FN = conmax[1][0]
+    FP = conmax[0][1]
 
     print("KNeighbours Algorithm confusion matrix")
     print(conmax)
-    print("Testing Accuracy = ", (TP+TN) / (TP+TN+FN+FP))
+    print("Testing Accuracy = ", (TP + TN) / (TP + TN + FN + FP))
     print()
 
+    print(classification_report(y_test, KNeighborsModel.predict(X_test)))
+    print("Accuracy Score is:", accuracy_score(y_test, KNeighborsModel.predict(X_test)))
 
-    print( classification_report(y_test, KNeighborsModel.predict(X_test)))
-    print( "Accuracy Score is:", accuracy_score(y_test,KNeighborsModel.predict(X_test)))
-
-
-    knc=KNeighborsClassifier(n_neighbors=7)
-    knc.fit(X_train,y_train)
-    title="KNeighbours : Confusion Matrix"
-    disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues,normalize=None)
+    knc = KNeighborsClassifier(n_neighbors=7)
+    knc.fit(X_train, y_train)
+    title = "KNeighbours : Confusion Matrix"
+    disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues, normalize=None)
     disp.ax_.set_title(title)
 
     print(title)
@@ -121,9 +115,6 @@ def implementKnn(data):
 
     plt.show()
 
-
-
- 
 
 def fill_missing_values(data):
     # Identifying the rows of age with non numeric values
@@ -360,6 +351,7 @@ def data_analysis(data):
 
 
 def k_means_clustering(data):
+    data = data[['pop', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
     data = data.apply(LabelEncoder().fit_transform)
     distortions = []
     K = range(1, 10)
@@ -376,6 +368,18 @@ def k_means_clustering(data):
     plt.title('The Elbow Method showing the optimal k')
     plt.show()
     # The optimal k value is found out to be 3 based on elbow method.
+
+    kmeanModel = KMeans(n_clusters=3)
+    kmeanModel.fit(data)
+
+    data['k_means'] = kmeanModel.predict(data)
+    print(data)
+    fig, axes = plt.subplots(1, figsize=(12, 6))
+    axes.scatter(data['h_income'], data['pop'], c=data['k_means'],
+                 cmap=plt.cm.Set1)
+    axes.set_title('K_Means', fontsize=18)
+    plt.show()
+
 
 def main():
     pd.set_option('display.width', 800)
@@ -401,9 +405,10 @@ def main():
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
     newdf = data.select_dtypes(include=numerics)
-    implementpca(newdf,data)
+    # implementpca(newdf,data)
     implementKnn(data)
 
+    print(data)
     k_means_clustering(data)
 
 
