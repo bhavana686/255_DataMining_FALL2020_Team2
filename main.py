@@ -1,36 +1,20 @@
-# -*- coding: utf-8 -*-
-
-
-import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-from sklearn.model_selection import train_test_split
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import scale  # Data scaling
 from sklearn import decomposition  # PCA
 import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-import plotly.express as px
 from sklearn.model_selection import train_test_split
 import pandas as pd
-from matplotlib import pyplot
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, classification_report, plot_confusion_matrix
-from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 import scipy.cluster.hierarchy as sch
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
 
 
 def load_data(filename):
@@ -48,40 +32,30 @@ def remove_unnecessary_columns(data):
         axis=1, inplace=True)
 
 
-
-    
-def implementpca(data,olddata):
-    # checking null data
+def implementpca(data, olddata):
     null_columns = data.columns[data.isnull().any()]
     print(data[null_columns].isnull().sum())
-    print("Are any value null",data.isnull().values.any())
-    #keeping target column cause in Y and remaining features column in X
-    #used labelencoder to transform target column to expected format
+    print("Are any value null", data.isnull().values.any())
+
     labelencoder = LabelEncoder()
+
     X = data
     Y = olddata["cause"]
     Y = labelencoder.fit_transform(olddata['cause'])
-    #printing data to check correct features present in X and Y
-    print(X)
-    print(Y)
-    # z-score for the features i.e scaling the X 
     scaler = StandardScaler()
     scaler.fit(X)
     X = scaler.transform(X)
-    # here we are taking 2 pc components and projecting original data into pca space 
-    pca = decomposition.PCA(n_components=2) 
-    X_new = pca.fit_transform(X)
-
-    # ploting the graph 
-    fig, axes = plt.subplots(1,2)
-    axes[0].scatter(X[:,0], X[:,1], c=Y)
+    pca = decomposition.PCA(n_components=2)  # estimate only 2 PCs
+    X_new = pca.fit_transform(X)  # project the original data into the PCA space
+    fig, axes = plt.subplots(1, 2)
+    axes[0].scatter(X[:, 0], X[:, 1], c=Y)
     axes[0].set_xlabel('x1')
     axes[0].set_ylabel('x2')
-    axes[0].set_title('Before applying PCA')
-    axes[1].scatter(X_new[:,0], X_new[:,1], c=Y)
+    axes[0].set_title('Before PCA')
+    axes[1].scatter(X_new[:, 0], X_new[:, 1], c=Y)
     axes[1].set_xlabel('PC1')
     axes[1].set_ylabel('PC2')
-    axes[1].set_title('After applying PCA')
+    axes[1].set_title('After PCA')
     plt.show()
     print('explained_variance_ratio_')
     print(pca.explained_variance_ratio_)
@@ -89,104 +63,54 @@ def implementpca(data,olddata):
     print(abs(pca.components_))
 
 
-
 def implementKnn(data):
-
-    # selected following important features by performing PCA
-    temp_data= data[['age', 'p_income', 'h_income', 'pov', 'comp_income','cause']]
-    
-    # printing the data
-    print(temp_data)
-    
-    # apply label encoder to tranform data to requested format
     temp_data = data[['age', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
 
-    # assigning first 5 features to train data
+    print(temp_data)
+
+    temp_data = temp_data.apply(LabelEncoder().fit_transform)
     train = temp_data.iloc[:, :5]
-    
-    # assigning last feature (target column) to test data 
     test = temp_data.iloc[:, 5]
-    
-    # checking null values
+
     null_columns = train.columns[train.isnull().any()]
     print(train[null_columns].isnull().sum())
     print("Are any value null", train.isnull().values.any())
     print("y shape = ", train.shape)
     print(train)
 
-    
-    # spliting the train and test data. train is 80 percent of data and test is 20 percent of data.
-    X_train, X_test , y_train, y_test = train_test_split(train,test,test_size=0.20, random_state=55, shuffle =True)
-    
-    # To apply KNN Classifier we need to know k values. there is no specific pre defined method. so we find it by trial and error method
-    # here we are calculating accuracy for k=1 to k=15 and check at what value of k we got highest accuracy.
-    #import required packages
-    from sklearn.neighbors import KNeighborsClassifier
-    from matplotlib import pyplot
-    dic = {}
-    # iterating k from 1 to 15
-    for k in range(1,15):
-        KNeighborsModel = KNeighborsClassifier(n_neighbors = k, weights = 'uniform',
-                                      algorithm = 'brute')
+    X_train, X_test, y_train, y_test = train_test_split(train, test, test_size=0.20, random_state=55, shuffle=True)
 
-        KNeighborsModel.fit(X_train,y_train)
-        kn_test_score = KNeighborsModel.score(X_test,y_test)
-        kn_train_score = KNeighborsModel.score(X_train,y_train)
-        dic[k] = {'train_value': kn_train_score,'test_value': kn_test_score } 
+    KNeighborsModel = KNeighborsClassifier(n_neighbors=5, weights='uniform', algorithm='brute')
 
-    train_list,test_list=[],[]
-    for i in range(1,15):
-        train_list.append(dic[i]['train_value'])
-        test_list.append(dic[i]['test_value'])
- 
-    # printing accuracy for train and test for all values of k
-    for i in range(1,15):
-        print(i,dic[i])
+    KNeighborsModel.fit(X_train, y_train)
 
-    # ploting the graph of accuracy for train and test data for all values of k
-    depth = range(1,15)
-    pyplot.plot(depth,train_list, label='train')
-    pyplot.plot(depth,test_list, label='test')
-    pyplot.legend()
-    pyplot.show()
+    print("KNeighbors Classifier model run successfully")
 
-    
-    # at k=6 we got stable accuracy so perform KNeighbors with k=6
-    KNeighborsModel = KNeighborsClassifier(n_neighbors = 6,
-                                       weights = 'uniform',
-                                      algorithm = 'brute')
+    conmax = confusion_matrix(y_test, KNeighborsModel.predict(X_test))
 
-    KNeighborsModel.fit(X_train,y_train)
-    print("KNeighbors Classifier  run successfully")
-
-    # calculating confusion_matrix
-    conmax =confusion_matrix(y_test,KNeighborsModel.predict(X_test))
-    # calculating True Positive,True Negative,False Negative 
-    TP=conmax[0][0]
-    TN=conmax[1][1]
-    FN=conmax[1][0]
-    FP=conmax[0][1]
+    TP = conmax[0][0]
+    TN = conmax[1][1]
+    FN = conmax[1][0]
+    FP = conmax[0][1]
 
     print("KNeighbours Algorithm confusion matrix")
     print(conmax)
     print("Testing Accuracy = ", (TP + TN) / (TP + TN + FN + FP))
     print()
 
-    print( classification_report(y_test, KNeighborsModel.predict(X_test)))
-    print( "Accuracy Score ", accuracy_score(y_test,KNeighborsModel.predict(X_test)))
-    from sklearn.neighbors import KNeighborsClassifier
-    knc=KNeighborsClassifier(n_neighbors=6)
-    knc.fit(X_train,y_train)
-    # ploting confusion matrix
-    msg="KNeighbours : Confusion Matrix"
-    disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues,normalize=None)
-    disp.ax_.set_title(msg)
-    print(msg)
+    print(classification_report(y_test, KNeighborsModel.predict(X_test)))
+    print("Accuracy Score is:", accuracy_score(y_test, KNeighborsModel.predict(X_test)))
+
+    knc = KNeighborsClassifier(n_neighbors=7)
+    knc.fit(X_train, y_train)
+    title = "KNeighbours : Confusion Matrix"
+    disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues, normalize=None)
+    disp.ax_.set_title(title)
+
+    print(title)
     print(disp.confusion_matrix)
+
     plt.show()
-
-    
-
 
 
 def fill_missing_values(data):
@@ -394,9 +318,7 @@ def data_analysis(data):
     plt.bar(x=month_labels,
             height=month_values)
     plt.title('Breakdown by Month')
-    plt.show() 
-
- 
+    plt.show()
 
     # Analysing the data by breaking down with reference to city and ploting bar graph
     city_values = data["city"].value_counts().head(5)
@@ -423,7 +345,6 @@ def data_analysis(data):
     plt.xticks(rotation=45)
     plt.title('Breakdown by Law Enforcement')
     plt.show()
-
 
 
 def prep_training(data):
@@ -498,6 +419,7 @@ def decision_tree_classification(data):
 def k_means_clustering(data):
     data = data[['h_income', 'cause']]
     data = data.apply(LabelEncoder().fit_transform)
+    # Calculating the distortions.
     distortions = []
     K = range(1, 10)
 
@@ -513,7 +435,7 @@ def k_means_clustering(data):
     plt.title('The Elbow Method showing the optimal k')
     plt.show()
     # The optimal k value is found out to be 3 based on elbow method.
-
+    # Using k value as 3 while performing K-means clustering.
     kmeanModel = KMeans(n_clusters=3)
     kmeanModel.fit(data)
 
@@ -524,13 +446,15 @@ def k_means_clustering(data):
     axes.scatter(data['h_income'], data['cause'], c=data['k_means'],
                  cmap=plt.cm.Set1)
     axes.set_title('K_Means', fontsize=18)
+    plt.xlabel('Household Income')
+    plt.ylabel('Cause ( 0.0 - Gunshot, 1.0 – Death in custody, 2.0 – Taser, 3.0 – Struck by vehicle )')
     plt.show()
 
 
 def hierarchial_clustering(data):
-
-    data = data[['h_income', 'cause']]
+    data = data[['armed', 'cause']]
     data = data.apply(LabelEncoder().fit_transform)
+    # Using dendrogram to find out the number of clusters instead of elbow method.
     dendrogram = sch.dendrogram(sch.linkage(data, method="ward"))
     plt.title('Dendrogram')
     plt.xlabel('Police Killings')
@@ -539,13 +463,15 @@ def hierarchial_clustering(data):
 
     # Calculate the number of clusters based on significant branches in the dendogram
     # by setting a threshold on euclidean distance.
-    hc = AgglomerativeClustering(n_clusters=3, affinity='euclidean', linkage='ward')
+    hc = AgglomerativeClustering(n_clusters=4, affinity='euclidean', linkage='ward')
     y_hc = hc.fit_predict(data)
     print(data)
     plt.figure(figsize=(10, 7))
-    plt.scatter(data['h_income'], data['cause'], c=hc.labels_)
+    plt.scatter(data['armed'], data['cause'], c=hc.labels_)
+    plt.title('Hierarchical Agglomerative clustering')
+    plt.xlabel(' Armed ( 0 - No, 1 - Firearm, 2 - Non-lethal firearm, 3 - Other, 4 - Knife, 5 - Vehicle, 6 - Disputed)')
+    plt.ylabel(' Cause ( 0.0 - Gunshot, 1.0 – Death in custody, 2.0 – Taser, 3.0 – Struck by vehicle )')
     plt.show()
-
 
 
 def main():
@@ -569,22 +495,15 @@ def main():
     data = fill_missing_values(data)
 
     data_analysis(data)
-
-    # taking numeric data types to perform pca
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+
     newdf = data.select_dtypes(include=numerics)
 
-
-    #perform pca
-    implementpca(newdf,data)
-
-    #perform knn
-    implementKnn(data)
-
-    print(data)
     k_means_clustering(data)
     hierarchial_clustering(data)
     decision_tree_classification(data)
+    implementpca(newdf, data)
+    implementKnn(data)
 
 
 if __name__ == "__main__":
