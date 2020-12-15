@@ -10,7 +10,7 @@ We want to cluster the data and observe the properties of clusters formed. The i
 
 ![Elbow method](/images/Elbow.PNG)
 
-![K-means](/images/K-means.PNG)
+![K-Means](/images/K-means.PNG)
 
 **Hierarchical Agglomerative clustering**:
 
