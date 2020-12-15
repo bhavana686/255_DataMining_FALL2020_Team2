@@ -26,6 +26,8 @@ from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, classification_report, plot_confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
+import scipy.cluster.hierarchy as sch
+from sklearn.cluster import AgglomerativeClustering
 
 
 def load_data(filename):
@@ -428,7 +430,7 @@ def decision_tree_classification(data):
 
 
 def k_means_clustering(data):
-    data = data[['pop', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
+    data = data[['h_income', 'cause']]
     data = data.apply(LabelEncoder().fit_transform)
     distortions = []
     K = range(1, 10)
@@ -449,12 +451,33 @@ def k_means_clustering(data):
     kmeanModel = KMeans(n_clusters=3)
     kmeanModel.fit(data)
 
+    print(data)
     data['k_means'] = kmeanModel.predict(data)
     print(data)
     fig, axes = plt.subplots(1, figsize=(12, 6))
-    axes.scatter(data['h_income'], data['pop'], c=data['k_means'],
+    axes.scatter(data['h_income'], data['cause'], c=data['k_means'],
                  cmap=plt.cm.Set1)
     axes.set_title('K_Means', fontsize=18)
+    plt.show()
+
+
+def hierarchial_clustering(data):
+
+    data = data[['h_income', 'cause']]
+    data = data.apply(LabelEncoder().fit_transform)
+    dendrogram = sch.dendrogram(sch.linkage(data, method="ward"))
+    plt.title('Dendrogram')
+    plt.xlabel('Police Killings')
+    plt.ylabel('Euclidean distances')
+    plt.show()
+
+    # Calculate the number of clusters based on significant branches in the dendogram
+    # by setting a threshold on euclidean distance.
+    hc = AgglomerativeClustering(n_clusters=3, affinity='euclidean', linkage='ward')
+    y_hc = hc.fit_predict(data)
+    print(data)
+    plt.figure(figsize=(10, 7))
+    plt.scatter(data['h_income'], data['cause'], c=hc.labels_)
     plt.show()
 
 
@@ -482,12 +505,12 @@ def main():
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
     newdf = data.select_dtypes(include=numerics)
-    implementpca(newdf, data)
+    # implementpca(newdf, data)
     implementKnn(data)
 
     print(data)
     k_means_clustering(data)
-
+    hierarchial_clustering(data)
     decision_tree_classification(data)
 
 
