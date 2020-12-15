@@ -67,4 +67,20 @@ The nearest neighbor classifier model is able to perform well in predicting the 
 ## Conclusion
 We have built the Classification Models to classify the cause of police killings to arrive at the cause of killing based on different features and also determine the cause of killing when the cause is unknown. We found out that the police killings due to gunshot and taser has been comparatively more in the cities with lower h_income ( household income ) when compared to cities with medium and higher h_income. Subjects carrying no arms or carrying a knife died only in custody whereas subjects carrying arms are prone to gunshots, death in custody, taser and struck by vehicle but the subjects disputed with police died either in custody, due to taser or struck by vehicle. K-Nearest Neighbour classifier model gave us the accuracy score of 0.91 percentage whereas Decision Tree Classifier model gave an accuracy ranging between 0.8 and 0.85 
 
-
+## Steps to run the code:
+**Google Colaboratory**:
+ - Open Google Colaboratory.
+ - Click NEW NOTEBOOK.
+ - Copy the main.py file and paste in the notebook.
+ - Import the police_killings.csv file into Google Colaboratory and mention the path in the line "data = load_data('police_killings.csv')" in place of police_killings.csv.
+ - The above line of code can be found in main function.
+ - Hit the Run cell button.
+ 
+ **Pycharm**:
+ 
+ - Open Pycharm editor.
+ - Import the main.py file and police_killings.csv file .
+ - Install sklearn, matplotlib, scipy, pandas and numpy.
+ - Open the terminal and navigate to the path where main.py is present and execute the command ' pip3 install plotly '.
+ - Run the main.py file.
+ - All the visualizations appear automatically and the images of decision trees created gets saved in the folder where main.py is present.   
