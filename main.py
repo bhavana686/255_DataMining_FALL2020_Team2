@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -470,7 +467,7 @@ def decision_tree_classification(data):
     # Checking for null values in columns as presence of null values in data leads to
     # problem in fitting the data in the function used to extract significant features.
     print(X.isnull().sum())
-    # apply SelectKBest class to extract top 8 best features
+    # apply SelectKBest class to extract top 5 best features
     bestfeatures = SelectKBest(score_func=chi2, k=5)
     fit = bestfeatures.fit(X, y)
     dfscores = pd.DataFrame(fit.scores_)
@@ -478,7 +475,7 @@ def decision_tree_classification(data):
     # concat two dataframes for better visualization
     featureScores = pd.concat([dfcolumns, dfscores], axis=1)
     featureScores.columns = ['Factors', 'Score']  # naming the dataframe columns
-    print(featureScores.nlargest(5, 'Score'))  # print 8 best features
+    print(featureScores.nlargest(5, 'Score'))  # print 5 best features
 
     dt_numeric_data = numeric_data[['h_income', 'county_income', 'p_income', 'pop', 'pov']]
     # ['raceethnicity', 'gender', 'cause',]
