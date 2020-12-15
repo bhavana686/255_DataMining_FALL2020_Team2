@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import scale # Data scaling
@@ -32,67 +35,118 @@ def remove_unnecessary_columns(data):
          'county_id', 'county_fp', 'state_fp'],
         axis=1, inplace=True)
 
+
     
 def implementpca(data,olddata):
+    # checking null data
     null_columns = data.columns[data.isnull().any()]
     print(data[null_columns].isnull().sum())
     print("Are any value null",data.isnull().values.any())
- 
+    #keeping target column cause in Y and remaining features column in X
+    #used labelencoder to transform target column to expected format
     labelencoder = LabelEncoder()
-
     X = data
     Y = olddata["cause"]
     Y = labelencoder.fit_transform(olddata['cause'])
+    #printing data to check correct features present in X and Y
+    print(X)
+    print(Y)
+    # z-score for the features i.e scaling the X 
     scaler = StandardScaler()
     scaler.fit(X)
     X = scaler.transform(X)
-    pca = decomposition.PCA(n_components=2) # estimate only 2 PCs
-    X_new = pca.fit_transform(X) # project the original data into the PCA space
+    # here we are taking 2 pc components and projecting original data into pca space 
+    pca = decomposition.PCA(n_components=2) 
+    X_new = pca.fit_transform(X)
+
+    # ploting the graph 
     fig, axes = plt.subplots(1,2)
     axes[0].scatter(X[:,0], X[:,1], c=Y)
     axes[0].set_xlabel('x1')
     axes[0].set_ylabel('x2')
-    axes[0].set_title('Before PCA')
+    axes[0].set_title('Before applying PCA')
     axes[1].scatter(X_new[:,0], X_new[:,1], c=Y)
     axes[1].set_xlabel('PC1')
     axes[1].set_ylabel('PC2')
-    axes[1].set_title('After PCA')
+    axes[1].set_title('After applying PCA')
     plt.show()
     print('explained_variance_ratio_')
     print(pca.explained_variance_ratio_)
     print('components')
     print(abs( pca.components_ ))
 
-def implementKnn(data):
-    temp_data= data[['age', 'p_income', 'h_income', 'pov', 'comp_income','cause']]
 
+def implementKnn(data):
+    # selected following important features by performing PCA
+    temp_data= data[['age', 'p_income', 'h_income', 'pov', 'comp_income','cause']]
+    
+    # printing the data
     print(temp_data)
-   
+    
+    # apply label encoder to tranform data to requested format
     temp_data = temp_data.apply(LabelEncoder().fit_transform)
+    
+    # assigning first 5 features to train data
     train = temp_data.iloc[:, :5]
+    
+    # assigning last feature (target column) to test data 
     test = temp_data.iloc[:, 5]
-  
+    
+    # checking null values
     null_columns = train.columns[train.isnull().any()]
     print(train[null_columns].isnull().sum())
     print("Are any value null",train.isnull().values.any())
     print("y shape = ",train.shape)
     print(train)
 
-
+    
+    # spliting the train and test data. train is 80 percent of data and test is 20 percent of data.
     X_train, X_test , y_train, y_test = train_test_split(train,test,test_size=0.20, random_state=55, shuffle =True)
-  
+    
+    # To apply KNN Classifier we need to know k values. there is no specific pre defined method. so we find it by trial and error method
+    # here we are calculating accuracy for k=1 to k=15 and check at what value of k we got highest accuracy.
+    #import required packages
+    from sklearn.neighbors import KNeighborsClassifier
+    from matplotlib import pyplot
+    dic = {}
+    # iterating k from 1 to 15
+    for k in range(1,15):
+        KNeighborsModel = KNeighborsClassifier(n_neighbors = k, weights = 'uniform',
+                                      algorithm = 'brute')
 
+        KNeighborsModel.fit(X_train,y_train)
+        kn_test_score = KNeighborsModel.score(X_test,y_test)
+        kn_train_score = KNeighborsModel.score(X_train,y_train)
+        dic[k] = {'train_value': kn_train_score,'test_value': kn_test_score } 
 
-    KNeighborsModel = KNeighborsClassifier(n_neighbors = 5,weights = 'uniform',algorithm = 'brute')
+    train_list,test_list=[],[]
+    for i in range(1,15):
+        train_list.append(dic[i]['train_value'])
+        test_list.append(dic[i]['test_value'])
+ 
+    # printing accuracy for train and test for all values of k
+    for i in range(1,15):
+        print(i,dic[i])
+
+    # ploting the graph of accuracy for train and test data for all values of k
+    depth = range(1,15)
+    pyplot.plot(depth,train_list, label='train')
+    pyplot.plot(depth,test_list, label='test')
+    pyplot.legend()
+    pyplot.show()
+
+    
+    # at k=6 we got stable accuracy so perform KNeighbors with k=6
+    KNeighborsModel = KNeighborsClassifier(n_neighbors = 6,
+                                       weights = 'uniform',
+                                      algorithm = 'brute')
 
     KNeighborsModel.fit(X_train,y_train)
+    print("KNeighbors Classifier  run successfully")
 
-
-    print("KNeighbors Classifier model run successfully")
-
-
+    # calculating confusion_matrix
     conmax =confusion_matrix(y_test,KNeighborsModel.predict(X_test))
-
+    # calculating True Positive,True Negative,False Negative 
     TP=conmax[0][0]
     TN=conmax[1][1]
     FN=conmax[1][0]
@@ -102,22 +156,21 @@ def implementKnn(data):
     print(conmax)
     print("Testing Accuracy = ", (TP+TN) / (TP+TN+FN+FP))
     print()
-
-
     print( classification_report(y_test, KNeighborsModel.predict(X_test)))
-    print( "Accuracy Score is:", accuracy_score(y_test,KNeighborsModel.predict(X_test)))
-
-
-    knc=KNeighborsClassifier(n_neighbors=7)
+    print( "Accuracy Score ", accuracy_score(y_test,KNeighborsModel.predict(X_test)))
+    from sklearn.neighbors import KNeighborsClassifier
+    knc=KNeighborsClassifier(n_neighbors=6)
     knc.fit(X_train,y_train)
-    title="KNeighbours : Confusion Matrix"
+    # ploting confusion matrix
+    msg="KNeighbours : Confusion Matrix"
     disp = plot_confusion_matrix(knc, X_test, y_test, cmap=plt.cm.Blues,normalize=None)
-    disp.ax_.set_title(title)
-
-    print(title)
+    disp.ax_.set_title(msg)
+    print(msg)
     print(disp.confusion_matrix)
-
     plt.show()
+
+    
+
 
 
 
@@ -334,7 +387,6 @@ def data_analysis(data):
     plt.title('Breakdown by Month')
     plt.show() 
 
-
     #Analysing the data by breaking down with reference to city and ploting bar graph
     city_values = data["city"].value_counts().head(5)
     print(city_values.head(5))
@@ -363,9 +415,6 @@ def data_analysis(data):
     plt.title('Breakdown by Law Enforcement')
     plt.show() 
 
-    
-    
-
    
     
 
@@ -391,10 +440,16 @@ def main():
     data = fill_missing_values(data)
 
     data_analysis(data)
-    numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
+    # taking numeric data types to perform pca
+    numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
     newdf = data.select_dtypes(include=numerics)
+
+
+    #perform pca
     implementpca(newdf,data)
+
+    #perform knn
     implementKnn(data)
 
 
