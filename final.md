@@ -31,7 +31,7 @@ Since we found 5 significant branches, we performed hierarchical clustering with
 
 We classified the police killings based on the cause and built a decision tree classifier model to classify police killings with unknown cause. There are more than 20 features in the dataset and all the features may not be significant in the classification. So, we performed feature selection and considered the top 5 features for decision tree classification which are h_income ( household income ), county_income ( county level median household income ), p_income ( personal income ), pop ( population ) and pov ( poverty rate ) . We split the testing and training data in the ratio of 20:80. We have built the decision tree with depths ranging from 2 to 5. The testing accuracy is found to be varying between 80 and 85 most of the times.
 
-![Decision Tree](/images/[Decision Tree].png)
+![Decision Tree](/images/Decision%20Tree.png)
 
 ## Comparisons
 
