@@ -1,5 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.model_selection import train_test_split
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import scale  # Data scaling
@@ -350,6 +358,75 @@ def data_analysis(data):
     plt.show()
 
 
+def prep_training(data):
+    # Apply label encoding to encode all the values in the columns,so that it can be passed to the model
+    data = data.apply(LabelEncoder().fit_transform)
+    x = data.iloc[:, :7]
+    y = data.iloc[:, 7]
+    print("Shape of x: ", x.shape)
+    print("Shape of y: ", y.shape)
+
+    # Splitting the dataset into train and test sets (test_size = 0.2)
+    # see model_selection
+
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+    return X_train, X_test, y_train, y_test
+
+
+# Custom function which takes both the training, testing data and depth
+def dt_model(x_train, x_test, y_train, y_test, depth):
+    print("Decision tree with depth ", +depth)
+    model = DecisionTreeClassifier(random_state=0, max_depth=depth)
+    model.fit(x_train, y_train)
+    # Feature names, i.e., Attributes
+    # ['raceethnicity', 'gender', 'cause']
+    fn = ['h_income', 'county_income', 'p_income', 'pop', 'pov', 'raceethnicity', 'armed']
+    # Class names
+    cn = ['Gunshot', 'Death in custody', 'Taser', 'Struck by vehicle']
+    tree.plot_tree(model, feature_names=fn, class_names=cn, filled=True)
+    # Visualisation using the matplotlib library
+    plt.savefig('decision' + str(depth) + '.png')
+    # plt.show()
+    training_accuracy = model.score(x_train, y_train)
+    print("The training accuracy is found out to be: ", +training_accuracy)
+    # Predict the testing data and storing it in y_pred
+    y_pred = model.predict(x_test)
+    testing_accuracy = accuracy_score(y_test, y_pred)
+    print("The testing accuracy is found out to be: ", +testing_accuracy)
+
+
+def decision_tree_classification(data):
+    numeric_data = data.select_dtypes(include=np.number)
+    X = numeric_data  # independent columns
+    y = data.iloc[:, 2]  # target column i.e ethnicity
+    # Checking for null values in columns as presence of null values in data leads to
+    # problem in fitting the data in the function used to extract significant features.
+    print(X.isnull().sum())
+    # apply SelectKBest class to extract top 8 best features
+    bestfeatures = SelectKBest(score_func=chi2, k=5)
+    fit = bestfeatures.fit(X, y)
+    dfscores = pd.DataFrame(fit.scores_)
+    dfcolumns = pd.DataFrame(X.columns)
+    # concat two dataframes for better visualization
+    featureScores = pd.concat([dfcolumns, dfscores], axis=1)
+    featureScores.columns = ['Factors', 'Score']  # naming the dataframe columns
+    print(featureScores.nlargest(5, 'Score'))  # print 8 best features
+
+    dt_numeric_data = numeric_data[['h_income', 'county_income', 'p_income', 'pop', 'pov']]
+    # ['raceethnicity', 'gender', 'cause',]
+    dt_data = data[['raceethnicity', 'armed', 'cause']]
+    dt_data = pd.concat([dt_numeric_data, dt_data], axis=1)
+    print(dt_data)
+
+    print(dt_data['cause'].unique())
+
+    x_train, x_test, y_train, y_test = prep_training(dt_data)
+    dt_model(x_train, x_test, y_train, y_test, 2)
+    dt_model(x_train, x_test, y_train, y_test, 3)
+    dt_model(x_train, x_test, y_train, y_test, 4)
+    dt_model(x_train, x_test, y_train, y_test, 5)
+
+
 def k_means_clustering(data):
     data = data[['pop', 'p_income', 'h_income', 'pov', 'comp_income', 'cause']]
     data = data.apply(LabelEncoder().fit_transform)
@@ -405,11 +482,13 @@ def main():
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
     newdf = data.select_dtypes(include=numerics)
-    # implementpca(newdf,data)
+    implementpca(newdf, data)
     implementKnn(data)
 
     print(data)
     k_means_clustering(data)
+
+    decision_tree_classification(data)
 
 
 if __name__ == "__main__":
