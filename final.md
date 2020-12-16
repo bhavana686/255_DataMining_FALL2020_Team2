@@ -56,7 +56,6 @@ it this algorithm we store all available data and classify the new data based on
 
 ![k](/images/k.png)
 
-![cm](/images/cm.png)
 
 ## Comparisons
 
